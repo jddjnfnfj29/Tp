@@ -1,4 +1,4 @@
--- COOLGUI by 007n7
+-- DRAGONTHI GUI by 007n7
 local Players = game:GetService("Players")
 local UIS = game:GetService("UserInputService")
 local RS = game:GetService("RunService")
@@ -9,23 +9,23 @@ local character = player.Character or player.CharacterAdded:Wait()
 local humanoid = character:WaitForChild("Humanoid")
 
 -- Удаляем старый GUI если есть
-if CG:FindFirstChild("COOLGUI") then CG.COOLGUI:Destroy() end
+if CG:FindFirstChild("DRAGONTHI_GUI") then CG.DRAGONTHI_GUI:Destroy() end
 
--- Создаем GUI
+-- Создаем GUI в стиле из файла
 local gui = Instance.new("ScreenGui")
-gui.Name = "COOLGUI"
+gui.Name = "DRAGONTHI_GUI"
 gui.Parent = CG
 gui.ResetOnSpawn = false
 
 -- Главный фрейм
 local mainFrame = Instance.new("Frame")
 mainFrame.Name = "MainFrame"
-mainFrame.Size = UDim2.new(0, 250, 0, 40) -- Минимальный размер
-mainFrame.Position = UDim2.new(0.5, -125, 0.5, -20)
+mainFrame.Size = UDim2.new(0, 300, 0, 40) -- Минимальный размер
+mainFrame.Position = UDim2.new(0.5, -150, 0.5, -20)
 mainFrame.AnchorPoint = Vector2.new(0.5, 0.5)
-mainFrame.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
-mainFrame.BorderSizePixel = 1
-mainFrame.BorderColor3 = Color3.fromRGB(255, 0, 0)
+mainFrame.BackgroundColor3 = Color3.fromRGB(30, 30, 40)
+mainFrame.BorderSizePixel = 2
+mainFrame.BorderColor3 = Color3.fromRGB(80, 80, 90)
 mainFrame.Parent = gui
 
 -- Углы
@@ -36,9 +36,9 @@ corner.Parent = mainFrame
 -- Верхняя панель
 local topBar = Instance.new("Frame")
 topBar.Name = "TopBar"
-topBar.Size = UDim2.new(1, 0, 0, 25)
+topBar.Size = UDim2.new(1, 0, 0, 30)
 topBar.Position = UDim2.new(0, 0, 0, 0)
-topBar.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+topBar.BackgroundColor3 = Color3.fromRGB(20, 20, 30)
 topBar.BorderSizePixel = 0
 topBar.Parent = mainFrame
 
@@ -48,62 +48,64 @@ topCorner.Parent = topBar
 
 -- Заголовок
 local title = Instance.new("TextLabel")
-title.Size = UDim2.new(0, 150, 1, 0)
-title.Position = UDim2.new(0.5, -75, 0, 0)
+title.Size = UDim2.new(0, 200, 1, 0)
+title.Position = UDim2.new(0.5, -100, 0, 0)
 title.BackgroundTransparency = 1
-title.Text = "COOLGUI"
+title.Text = "DRAGONTHI | 17"
 title.Font = Enum.Font.SciFi
-title.TextColor3 = Color3.fromRGB(255, 0, 0)
+title.TextColor3 = Color3.fromRGB(150, 200, 255)
 title.TextSize = 18
 title.Parent = topBar
 
 -- Кнопка разворачивания
 local expandBtn = Instance.new("TextButton")
 expandBtn.Name = "ExpandButton"
-expandBtn.Size = UDim2.new(0, 25, 1, 0)
-expandBtn.Position = UDim2.new(1, -25, 0, 0)
-expandBtn.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+expandBtn.Size = UDim2.new(0, 30, 1, 0)
+expandBtn.Position = UDim2.new(1, -30, 0, 0)
+expandBtn.BackgroundColor3 = Color3.fromRGB(40, 40, 50)
 expandBtn.BorderSizePixel = 0
 expandBtn.Text = "+"
 expandBtn.Font = Enum.Font.SciFi
-expandBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
-expandBtn.TextSize = 18
+expandBtn.TextColor3 = Color3.fromRGB(200, 200, 255)
+expandBtn.TextSize = 20
 expandBtn.Parent = topBar
 
 -- Кнопка закрытия
 local closeBtn = Instance.new("TextButton")
 closeBtn.Name = "CloseButton"
-closeBtn.Size = UDim2.new(0, 25, 1, 0)
-closeBtn.Position = UDim2.new(1, -50, 0, 0)
-closeBtn.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+closeBtn.Size = UDim2.new(0, 30, 1, 0)
+closeBtn.Position = UDim2.new(1, -60, 0, 0)
+closeBtn.BackgroundColor3 = Color3.fromRGB(40, 40, 50)
 closeBtn.BorderSizePixel = 0
 closeBtn.Text = "X"
 closeBtn.Font = Enum.Font.SciFi
-closeBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+closeBtn.TextColor3 = Color3.fromRGB(200, 200, 255)
 closeBtn.TextSize = 18
 closeBtn.Parent = topBar
 
 -- Фрейм для кнопок (изначально скрыт)
-local buttonsFrame = Instance.new("Frame")
+local buttonsFrame = Instance.new("ScrollingFrame")
 buttonsFrame.Name = "ButtonsFrame"
-buttonsFrame.Size = UDim2.new(1, 0, 0, 160)
-buttonsFrame.Position = UDim2.new(0, 0, 0, 25)
+buttonsFrame.Size = UDim2.new(1, 0, 0, 250)
+buttonsFrame.Position = UDim2.new(0, 0, 0, 30)
 buttonsFrame.BackgroundTransparency = 1
 buttonsFrame.Visible = false
+buttonsFrame.ScrollBarThickness = 5
+buttonsFrame.CanvasSize = UDim2.new(0, 0, 0, 500)
 buttonsFrame.Parent = mainFrame
 
--- Создаем кнопки
-local function CreateButton(name, yPos, text)
+-- Создаем кнопки в стиле таблицы
+local function CreateButton(name, text, xPos, yPos, width)
     local button = Instance.new("TextButton")
     button.Name = name
-    button.Size = UDim2.new(1, -10, 0, 30)
-    button.Position = UDim2.new(0, 5, 0, yPos)
-    button.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
-    button.BorderColor3 = Color3.fromRGB(255, 0, 0)
+    button.Size = UDim2.new(width, -10, 0, 30)
+    button.Position = UDim2.new(xPos, 5, 0, yPos)
+    button.BackgroundColor3 = Color3.fromRGB(25, 25, 35)
+    button.BorderColor3 = Color3.fromRGB(80, 80, 90)
     button.BorderSizePixel = 1
     button.Text = text
     button.Font = Enum.Font.SciFi
-    button.TextColor3 = Color3.fromRGB(255, 255, 255)
+    button.TextColor3 = Color3.fromRGB(180, 200, 255)
     button.TextSize = 14
     button.Parent = buttonsFrame
     
@@ -114,10 +116,53 @@ local function CreateButton(name, yPos, text)
     return button
 end
 
-local flyBtn = CreateButton("FlyButton", 5, "Fly [OFF]")
-local noclipBtn = CreateButton("NoclipButton", 40, "Noclip [OFF]")
-local espBtn = CreateButton("ESPButton", 75, "ESP Players [OFF]")
-local espBotsBtn = CreateButton("ESPBotsButton", 110, "ESP Bots [OFF]")
+-- Создаем заголовки столбцов
+local headers = {"Drage", "Dual Blades", "Custom Gear", "Stamper Tools"}
+for i, header in ipairs(headers) do
+    local headerLabel = Instance.new("TextLabel")
+    headerLabel.Size = UDim2.new(0.25, -10, 0, 25)
+    headerLabel.Position = UDim2.new((i-1)*0.25, 5, 0, 5)
+    headerLabel.BackgroundTransparency = 1
+    headerLabel.Text = header
+    headerLabel.Font = Enum.Font.SciFi
+    headerLabel.TextColor3 = Color3.fromRGB(150, 200, 255)
+    headerLabel.TextSize = 16
+    headerLabel.TextXAlignment = Enum.TextXAlignment.Left
+    headerLabel.Parent = buttonsFrame
+end
+
+-- Создаем кнопки как в таблице
+CreateButton("EyeLaserBtn", "Eyelaser", 0, 35, 0.25)
+CreateButton("KnifeBtn", "Knife", 0.25, 35, 0.25)
+CreateButton("ToolStealerBtn", "Tool Stealer", 0.5, 35, 0.25)
+CreateButton("Empty1Btn", "Empty", 0.75, 35, 0.25)
+
+CreateButton("LanceBtn", "Lance", 0, 70, 0.25)
+CreateButton("LightsaberBtn", "Lightsaber", 0.25, 70, 0.25)
+CreateButton("DevUziBtn", "Dev Uzi", 0.5, 70, 0.25)
+CreateButton("GodLaserBtn", "God Laser", 0.75, 70, 0.25)
+
+CreateButton("MasterHandBtn", "Master Hand", 0, 105, 0.25)
+CreateButton("PlaneBtn", "Plane", 0.25, 105, 0.25)
+CreateButton("DrawToolBtn", "Draw Tool", 0.5, 105, 0.25)
+CreateButton("Empty2Btn", "Empty", 0.75, 105, 0.25)
+
+CreateButton("SnowballBtn", "Snowball", 0, 140, 0.25)
+CreateButton("StaffBtn", "Staff", 0.25, 140, 0.25)
+CreateButton("Empty3Btn", "Empty", 0.5, 140, 0.25)
+CreateButton("Empty4Btn", "Empty", 0.75, 140, 0.25)
+
+CreateButton("Empty5Btn", "Empty", 0, 175, 0.25)
+CreateButton("TechnoGauntletBtn", "Techno Gauntlet", 0.25, 175, 0.25)
+CreateButton("Empty6Btn", "Empty", 0.5, 175, 0.25)
+CreateButton("Empty7Btn", "Empty", 0.75, 175, 0.25)
+
+CreateButton("WandBtn", "Wand", 0, 210, 0.25)
+CreateButton("xBowBtn", "xBow", 0.25, 210, 0.25)
+
+-- Добавляем кнопку Fly отдельно
+local flyBtn = CreateButton("FlyBtn", "Fly [OFF]", 0, 245, 1)
+flyBtn.Size = UDim2.new(1, -10, 0, 30)
 
 -- Функционал перетаскивания
 local dragging, dragInput, dragStart, startPos
@@ -154,15 +199,17 @@ UIS.InputChanged:Connect(function(input)
 end)
 
 -- Функционал кнопок
+local expanded = false
 expandBtn.MouseButton1Click:Connect(function()
-    if buttonsFrame.Visible then
-        buttonsFrame.Visible = false
-        mainFrame.Size = UDim2.new(0, 250, 0, 40)
-        expandBtn.Text = "+"
-    else
+    expanded = not expanded
+    if expanded then
         buttonsFrame.Visible = true
-        mainFrame.Size = UDim2.new(0, 250, 0, 200)
+        mainFrame.Size = UDim2.new(0, 300, 0, 280)
         expandBtn.Text = "-"
+    else
+        buttonsFrame.Visible = false
+        mainFrame.Size = UDim2.new(0, 300, 0, 30)
+        expandBtn.Text = "+"
     end
 end)
 
@@ -170,39 +217,40 @@ closeBtn.MouseButton1Click:Connect(function()
     gui:Destroy()
 end)
 
--- Fly функция
+-- Исправленный Fly функционал
 local flying = false
 local flySpeed = 50
 local bodyVelocity, bodyGyro
 
 local function ToggleFly()
-    if not character then return end
+    if not character or not character:FindFirstChild("HumanoidRootPart") then return end
     
     flying = not flying
     
     if flying then
         humanoid:ChangeState(Enum.HumanoidStateType.Physics)
-        if character:FindFirstChild("HumanoidRootPart") then
-            bodyVelocity = Instance.new("BodyVelocity")
-            bodyVelocity.Velocity = Vector3.new(0, 0, 0)
-            bodyVelocity.MaxForce = Vector3.new(4000, 4000, 4000)
-            bodyVelocity.P = 1250
-            bodyVelocity.Parent = character.HumanoidRootPart
-            
-            bodyGyro = Instance.new("BodyGyro")
-            bodyGyro.MaxTorque = Vector3.new(4000, 4000, 4000)
-            bodyGyro.P = 1250
-            bodyGyro.D = 250
-            bodyGyro.Parent = character.HumanoidRootPart
-        end
+        
+        -- Создаем BodyVelocity и BodyGyro
+        bodyVelocity = Instance.new("BodyVelocity")
+        bodyVelocity.Velocity = Vector3.new(0, 0, 0)
+        bodyVelocity.MaxForce = Vector3.new(9e9, 9e9, 9e9)
+        bodyVelocity.P = 10000
+        bodyVelocity.Parent = character.HumanoidRootPart
+        
+        bodyGyro = Instance.new("BodyGyro")
+        bodyGyro.MaxTorque = Vector3.new(9e9, 9e9, 9e9)
+        bodyGyro.P = 10000
+        bodyGyro.CFrame = character.HumanoidRootPart.CFrame
+        bodyGyro.Parent = character.HumanoidRootPart
+        
         flyBtn.Text = "Fly [ON]"
-        flyBtn.BackgroundColor3 = Color3.fromRGB(0, 100, 0)
+        flyBtn.BackgroundColor3 = Color3.fromRGB(0, 80, 0)
     else
         humanoid:ChangeState(Enum.HumanoidStateType.GettingUp)
         if bodyVelocity then bodyVelocity:Destroy() end
         if bodyGyro then bodyGyro:Destroy() end
         flyBtn.Text = "Fly [OFF]"
-        flyBtn.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
+        flyBtn.BackgroundColor3 = Color3.fromRGB(25, 25, 35)
     end
 end
 
@@ -240,121 +288,9 @@ UIS.InputEnded:Connect(function(input, gameProcessed)
     elseif input.KeyCode == Enum.KeyCode.LeftShift then flyControls.Down = false end
 end)
 
--- Noclip функция
-local noclip = false
-local noclipParts = {}
-
-local function NoclipLoop()
-    if not character then return end
-    
-    for _, part in pairs(character:GetDescendants()) do
-        if part:IsA("BasePart") then
-            if part.CanCollide and not noclipParts[part] then
-                noclipParts[part] = part.CanCollide
-            end
-            part.CanCollide = not noclip
-        end
-    end
-end
-
-noclipBtn.MouseButton1Click:Connect(function()
-    noclip = not noclip
-    
-    if noclip then
-        noclipBtn.Text = "Noclip [ON]"
-        noclipBtn.BackgroundColor3 = Color3.fromRGB(0, 100, 0)
-        NoclipLoop()
-    else
-        noclipBtn.Text = "Noclip [OFF]"
-        noclipBtn.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
-        
-        -- Восстанавливаем оригинальные значения
-        for part, canCollide in pairs(noclipParts) do
-            if part.Parent then
-                part.CanCollide = canCollide
-            end
-        end
-        noclipParts = {}
-    end
-end)
-
--- ESP функция
-local espPlayers = false
-local espBots = false
-local espBoxes = {}
-
-local function CreateESP(target)
-    if not target.Character then return end
-    
-    local espBox = Instance.new("BoxHandleAdornment")
-    espBox.Name = "ESP_" .. target.Name
-    espBox.Adornee = target.Character:FindFirstChild("HumanoidRootPart")
-    espBox.AlwaysOnTop = true
-    espBox.ZIndex = 10
-    espBox.Size = Vector3.new(2, 3, 1)
-    espBox.Transparency = 0.5
-    espBox.Color3 = target:IsA("Player") and Color3.fromRGB(0, 255, 0) or Color3.fromRGB(255, 0, 0)
-    espBox.Parent = target.Character.HumanoidRootPart
-    espBoxes[target] = espBox
-end
-
-local function ClearESP()
-    for _, espBox in pairs(espBoxes) do
-        espBox:Destroy()
-    end
-    espBoxes = {}
-end
-
-local function UpdateESP()
-    ClearESP()
-    
-    -- ESP для игроков
-    if espPlayers then
-        for _, player in ipairs(Players:GetPlayers()) do
-            if player ~= Players.LocalPlayer and player.Character then
-                CreateESP(player)
-            end
-        end
-    end
-    
-    -- ESP для ботов
-    if espBots then
-        for _, npc in ipairs(workspace:GetChildren()) do
-            if npc:FindFirstChild("Humanoid") and not Players:GetPlayerFromCharacter(npc) then
-                CreateESP(npc)
-            end
-        end
-    end
-end
-
-espBtn.MouseButton1Click:Connect(function()
-    espPlayers = not espPlayers
-    espBtn.Text = espPlayers and "ESP Players [ON]" or "ESP Players [OFF]"
-    espBtn.BackgroundColor3 = espPlayers and Color3.fromRGB(0, 100, 0) or Color3.fromRGB(20, 20, 20)
-    UpdateESP()
-end)
-
-espBotsBtn.MouseButton1Click:Connect(function()
-    espBots = not espBots
-    espBotsBtn.Text = espBots and "ESP Bots [ON]" or "ESP Bots [OFF]"
-    espBotsBtn.BackgroundColor3 = espBots and Color3.fromRGB(0, 100, 0) or Color3.fromRGB(20, 20, 20)
-    UpdateESP()
-end)
-
--- Обработка изменений персонажа
-player.CharacterAdded:Connect(function(newChar)
-    character = newChar
-    humanoid = newChar:WaitForChild("Humanoid")
-    
-    if flying then ToggleFly() end
-    if noclip then NoclipLoop() end
-    UpdateESP()
-end)
-
 -- Главный цикл
-RS.Stepped:Connect(function()
-    -- Управление полетом
-    if flying and character and character:FindFirstChild("HumanoidRootPart") then
+RS.Heartbeat:Connect(function()
+    if flying and character and character:FindFirstChild("HumanoidRootPart") and bodyVelocity and bodyGyro then
         local root = character.HumanoidRootPart
         local flyDirection = Vector3.new()
         
@@ -365,13 +301,22 @@ RS.Stepped:Connect(function()
         if flyControls.Up then flyDirection = flyDirection + Vector3.new(0, 1, 0) end
         if flyControls.Down then flyDirection = flyDirection - Vector3.new(0, 1, 0) end
         
-        bodyVelocity.Velocity = flyDirection.Magnitude > 0 and flyDirection.Unit * flySpeed or Vector3.new()
+        if flyDirection.Magnitude > 0 then
+            flyDirection = flyDirection.Unit * flySpeed
+        end
+        
+        bodyVelocity.Velocity = flyDirection
         bodyGyro.CFrame = root.CFrame
     end
-    
-    -- Noclip
-    if noclip then NoclipLoop() end
 end)
 
--- Инициализация ESP
-UpdateESP()
+-- Обработка изменений персонажа
+player.CharacterAdded:Connect(function(newChar)
+    character = newChar
+    humanoid = newChar:WaitForChild("Humanoid")
+    
+    if flying then
+        flying = false
+        ToggleFly() -- Перезапускаем fly при смене персонажа
+    end
+end)
