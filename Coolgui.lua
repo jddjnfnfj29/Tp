@@ -1,4 +1,4 @@
--- COOLGUI by 007n7 (Fixed Fly)
+-- COOLGUI by 007n7 (Inf Jump + Fixed ESP)
 local Players = game:GetService("Players")
 local UIS = game:GetService("UserInputService")
 local RS = game:GetService("RunService")
@@ -82,7 +82,7 @@ closeBtn.Parent = topBar
 -- Фрейм для кнопок
 local buttonsFrame = Instance.new("Frame")
 buttonsFrame.Name = "ButtonsFrame"
-buttonsFrame.Size = UDim2.new(1, 0, 0, 160)
+buttonsFrame.Size = UDim2.new(1, 0, 0, 130)
 buttonsFrame.Position = UDim2.new(0, 0, 0, 25)
 buttonsFrame.BackgroundTransparency = 1
 buttonsFrame.Visible = false
@@ -108,7 +108,7 @@ local function CreateButton(name, yPos, text)
 end
 
 -- Создаем кнопки
-local flyBtn = CreateButton("FlyButton", 5, "Fly [OFF]")
+local infJumpBtn = CreateButton("InfJumpButton", 5, "Inf Jump [OFF]")
 local noclipBtn = CreateButton("NoclipButton", 40, "Noclip [OFF]")
 local espBtn = CreateButton("ESPButton", 75, "ESP Players [OFF]")
 local espBotsBtn = CreateButton("ESPBotsButton", 110, "ESP Bots [OFF]")
@@ -150,7 +150,7 @@ end)
 -- Управление окном
 expandBtn.MouseButton1Click:Connect(function()
     buttonsFrame.Visible = not buttonsFrame.Visible
-    mainFrame.Size = buttonsFrame.Visible and UDim2.new(0, 250, 0, 200) or UDim2.new(0, 250, 0, 40)
+    mainFrame.Size = buttonsFrame.Visible and UDim2.new(0, 250, 0, 170) or UDim2.new(0, 250, 0, 40)
     expandBtn.Text = buttonsFrame.Visible and "-" or "+"
 end)
 
@@ -158,78 +158,36 @@ closeBtn.MouseButton1Click:Connect(function()
     gui:Destroy()
 end)
 
--- ИСПРАВЛЕННЫЙ Fly функционал
-local flying = false
-local flySpeed = 50
-local bodyVelocity, bodyGyro
+-- Inf Jump функция
+local infJumpEnabled = false
+local jumpConnection
 
-local function ToggleFly()
-    if not character or not character:FindFirstChild("HumanoidRootPart") then return end
+local function ToggleInfJump()
+    infJumpEnabled = not infJumpEnabled
     
-    flying = not flying
-    
-    if flying then
-        humanoid:ChangeState(Enum.HumanoidStateType.Physics)
+    if infJumpEnabled then
+        infJumpBtn.Text = "Inf Jump [ON]"
+        infJumpBtn.BackgroundColor3 = Color3.fromRGB(0, 50, 0)
         
-        -- Создаем физические элементы
-        bodyVelocity = Instance.new("BodyVelocity")
-        bodyVelocity.Velocity = Vector3.new(0, 0.1, 0) -- Небольшой начальный импульс
-        bodyVelocity.MaxForce = Vector3.new(40000, 40000, 40000)
-        bodyVelocity.P = 10000
-        bodyVelocity.Parent = character.HumanoidRootPart
-        
-        bodyGyro = Instance.new("BodyGyro")
-        bodyGyro.MaxTorque = Vector3.new(40000, 40000, 40000)
-        bodyGyro.P = 10000
-        bodyGyro.CFrame = character.HumanoidRootPart.CFrame
-        bodyGyro.Parent = character.HumanoidRootPart
-        
-        flyBtn.Text = "Fly [ON]"
-        flyBtn.BackgroundColor3 = Color3.fromRGB(0, 50, 0)
+        jumpConnection = UIS.JumpRequest:Connect(function()
+            if character and humanoid then
+                humanoid:ChangeState(Enum.HumanoidStateType.Jumping)
+            end
+        end)
     else
-        humanoid:ChangeState(Enum.HumanoidStateType.GettingUp)
-        if bodyVelocity then bodyVelocity:Destroy() end
-        if bodyGyro then bodyGyro:Destroy() end
-        flyBtn.Text = "Fly [OFF]"
-        flyBtn.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+        infJumpBtn.Text = "Inf Jump [OFF]"
+        infJumpBtn.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+        
+        if jumpConnection then
+            jumpConnection:Disconnect()
+            jumpConnection = nil
+        end
     end
 end
 
-flyBtn.MouseButton1Click:Connect(ToggleFly)
+infJumpBtn.MouseButton1Click:Connect(ToggleInfJump)
 
--- Управление полетом
-local flyControls = {
-    Forward = false,
-    Back = false,
-    Left = false,
-    Right = false,
-    Up = false,
-    Down = false
-}
-
-UIS.InputBegan:Connect(function(input, gameProcessed)
-    if not flying or gameProcessed then return end
-    
-    if input.KeyCode == Enum.KeyCode.W then flyControls.Forward = true
-    elseif input.KeyCode == Enum.KeyCode.S then flyControls.Back = true
-    elseif input.KeyCode == Enum.KeyCode.A then flyControls.Left = true
-    elseif input.KeyCode == Enum.KeyCode.D then flyControls.Right = true
-    elseif input.KeyCode == Enum.KeyCode.Space then flyControls.Up = true
-    elseif input.KeyCode == Enum.KeyCode.LeftShift then flyControls.Down = true end
-end)
-
-UIS.InputEnded:Connect(function(input, gameProcessed)
-    if not flying or gameProcessed then return end
-    
-    if input.KeyCode == Enum.KeyCode.W then flyControls.Forward = false
-    elseif input.KeyCode == Enum.KeyCode.S then flyControls.Back = false
-    elseif input.KeyCode == Enum.KeyCode.A then flyControls.Left = false
-    elseif input.KeyCode == Enum.KeyCode.D then flyControls.Right = false
-    elseif input.KeyCode == Enum.KeyCode.Space then flyControls.Up = false
-    elseif input.KeyCode == Enum.KeyCode.LeftShift then flyControls.Down = false end
-end)
-
--- Остальные функции (Noclip и ESP)
+-- Noclip функция
 local noclip = false
 local noclipParts = {}
 
@@ -252,38 +210,67 @@ noclipBtn.MouseButton1Click:Connect(function()
     NoclipLoop()
 end)
 
+-- Исправленный ESP функционал
 local espPlayers = false
 local espBots = false
 local espBoxes = {}
 
 local function CreateESP(target)
     if not target.Character then return end
+    
+    local humanoidRootPart = target.Character:FindFirstChild("HumanoidRootPart")
+    if not humanoidRootPart then return end
+    
+    -- Удаляем старый ESP если есть
+    if espBoxes[target] then
+        espBoxes[target]:Destroy()
+        espBoxes[target] = nil
+    end
+    
+    -- Создаем новый ESP
     local espBox = Instance.new("BoxHandleAdornment")
     espBox.Name = "ESP_"..target.Name
-    espBox.Adornee = target.Character:FindFirstChild("HumanoidRootPart")
+    espBox.Adornee = humanoidRootPart
     espBox.AlwaysOnTop = true
     espBox.ZIndex = 10
     espBox.Size = Vector3.new(2, 3, 1)
     espBox.Transparency = 0.5
     espBox.Color3 = target:IsA("Player") and Color3.fromRGB(0, 255, 0) or Color3.fromRGB(255, 0, 0)
-    espBox.Parent = target.Character.HumanoidRootPart
+    espBox.Parent = humanoidRootPart
+    
     espBoxes[target] = espBox
+    
+    -- Обработка изменения персонажа
+    target.CharacterAdded:Connect(function(newChar)
+        task.wait(1) -- Ждем загрузки персонажа
+        if espPlayers and target:IsA("Player") or espBots and not target:IsA("Player") then
+            CreateESP(target)
+        end
+    end)
 end
 
 local function ClearESP()
-    for _, box in pairs(espBoxes) do box:Destroy() end
+    for target, espBox in pairs(espBoxes) do
+        if espBox then
+            espBox:Destroy()
+        end
+    end
     espBoxes = {}
 end
 
 local function UpdateESP()
     ClearESP()
+    
+    -- ESP для игроков
     if espPlayers then
         for _, player in ipairs(Players:GetPlayers()) do
-            if player ~= player and player.Character then
+            if player ~= Players.LocalPlayer then
                 CreateESP(player)
             end
         end
     end
+    
+    -- ESP для ботов
     if espBots then
         for _, npc in ipairs(workspace:GetChildren()) do
             if npc:FindFirstChild("Humanoid") and not Players:GetPlayerFromCharacter(npc) then
@@ -308,23 +295,7 @@ espBotsBtn.MouseButton1Click:Connect(function()
 end)
 
 -- Главный цикл
-RS.Heartbeat:Connect(function()
-    -- Управление полетом
-    if flying and character and character:FindFirstChild("HumanoidRootPart") then
-        local root = character.HumanoidRootPart
-        local flyDirection = Vector3.new()
-        
-        if flyControls.Forward then flyDirection = flyDirection + root.CFrame.LookVector end
-        if flyControls.Back then flyDirection = flyDirection - root.CFrame.LookVector end
-        if flyControls.Left then flyDirection = flyDirection - root.CFrame.RightVector end
-        if flyControls.Right then flyDirection = flyDirection + root.CFrame.RightVector end
-        if flyControls.Up then flyDirection = flyDirection + Vector3.new(0, 1, 0) end
-        if flyControls.Down then flyDirection = flyDirection - Vector3.new(0, 1, 0) end
-        
-        bodyVelocity.Velocity = flyDirection.Magnitude > 0 and flyDirection.Unit * flySpeed or Vector3.new(0, 0.1, 0)
-        bodyGyro.CFrame = root.CFrame
-    end
-    
+RS.Stepped:Connect(function()
     -- Noclip
     if noclip then NoclipLoop() end
 end)
@@ -333,11 +304,17 @@ end)
 player.CharacterAdded:Connect(function(newChar)
     character = newChar
     humanoid = newChar:WaitForChild("Humanoid")
-    if flying then
-        flying = false
-        ToggleFly()
+    
+    -- Восстанавливаем Inf Jump
+    if infJumpEnabled and jumpConnection then
+        jumpConnection:Disconnect()
+        ToggleInfJump()
     end
+    
+    -- Восстанавливаем Noclip
     if noclip then NoclipLoop() end
+    
+    -- Восстанавливаем ESP
     UpdateESP()
 end)
 
