@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DELTA SCRIPTS | by Bombomin2</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap');
+        
+        :root {
+            --bg-dark: #0a0014;
+            --bg-purple: #1a0033;
+            --accent-purple: #8a2be2;
+            --neon-purple: #b366ff;
+            --text-light: #e0b0ff;
+            --text-glow: 0 0 10px var(--neon-purple), 0 0 20px var(--accent-purple);
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            background: linear-gradient(135deg, var(--bg-dark), var(--bg-purple));
+            color: var(--text-light);
+            font-family: 'Montserrat', sans-serif;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+        
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 30px;
+            opacity: 0;
+            animation: fadeIn 1.5s ease-out forwards;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        h1 {
+            color: var(--neon-purple);
+            text-shadow: var(--text-glow);
+            font-size: 2.5rem;
+            margin-bottom: 30px;
+            position: relative;
+            display: inline-block;
+        }
+        
+        h1::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: linear-gradient(90deg, transparent, var(--accent-purple), transparent);
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 0.5; }
+            50% { opacity: 1; }
+        }
+        
+        .script-box {
+            background: rgba(26, 0, 51, 0.6);
+            border: 1px solid var(--accent-purple);
+            border-radius: 12px;
+            padding: 20px;
+            margin: 25px 0;
+            box-shadow: 0 0 20px rgba(138, 43, 226, 0.3);
+            backdrop-filter: blur(8px);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .script-box:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 0 30px rgba(179, 102, 255, 0.5);
+        }
+        
+        .script-box::before {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            background: linear-gradient(45deg, #ff00ff, #8a2be2, #4b0082);
+            z-index: -1;
+            border-radius: 14px;
+            opacity: 0;
+            transition: opacity 0.5s;
+        }
+        
+        .script-box:hover::before {
+            opacity: 1;
+            animation: borderRotate 3s linear infinite;
+        }
+        
+        @keyframes borderRotate {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .script-title {
+            color: var(--neon-purple);
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+            font-weight: 600;
+            text-shadow: 0 0 8px var(--neon-purple);
+        }
+        
+        .script-code {
+            background: rgba(13, 0, 26, 0.7);
+            color: var(--text-light);
+            padding: 15px;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            word-break: break-all;
+            text-align: left;
+            border-left: 3px solid var(--accent-purple);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .script-code::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(179, 102, 255, 0.1), transparent);
+            animation: scan 2s infinite;
+            pointer-events: none;
+        }
+        
+        @keyframes scan {
+            0% { transform: translateY(-100%); }
+            100% { transform: translateY(100%); }
+        }
+        
+        .copy-btn {
+            background: linear-gradient(45deg, var(--accent-purple), #6a0dad);
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 5px;
+            margin-top: 10px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s;
+            display: inline-block;
+        }
+        
+        .copy-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 15px var(--accent-purple);
+        }
+        
+        .creator {
+            margin-top: 40px;
+            font-style: italic;
+            color: var(--text-light);
+            text-shadow: 0 0 5px var(--neon-purple);
+            animation: glow 2s ease-in-out infinite alternate;
+        }
+        
+        @keyframes glow {
+            from { text-shadow: 0 0 5px var(--neon-purple); }
+            to { text-shadow: 0 0 10px var(--neon-purple), 0 0 20px var(--accent-purple); }
+        }
+        
+        .particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            pointer-events: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="particles" id="particles"></div>
+    
+    <div class="container">
+        <h1>DELTA SCRIPTS</h1>
+        
+        <div class="script-box">
+            <div class="script-title">DELTA TELEPORT</div>
+            <div class="script-code" id="script1">
+                loadstring(game:HttpGet("https://raw.githubusercontent.com/jddjnfnfj29/Tp/main/Delta_teleport.lua"))()
+            </div>
+            <button class="copy-btn" onclick="copyScript('script1')">COPY</button>
+        </div>
+        
+        <div class="script-box">
+            <div class="script-title">COPY COOLGUI</div>
+            <div class="script-code" id="script2">
+                loadstring(game:HttpGet("https://raw.githubusercontent.com/jddjnfnfj29/Tp/main/Coolgui.lua"))()
+            </div>
+            <button class="copy-btn" onclick="copyScript('script2')">COPY</button>
+        </div>
+        
+        <div class="creator">
+            TG создателя: @Bombomin2
+        </div>
+    </div>
+
+    <script>
+        // Функция копирования скрипта
+        function copyScript(id) {
+            const script = document.getElementById(id);
+            const range = document.createRange();
+            range.selectNode(script);
+            window.getSelection().removeAllRanges();
+            window.getSelection().addRange(range);
+            document.execCommand('copy');
+            window.getSelection().removeAllRanges();
+            
+            const btn = event.target;
+            btn.textContent = 'COPIED!';
+            setTimeout(() => {
+                btn.textContent = 'COPY';
+            }, 2000);
+        }
+        
+        // Создание частиц
+        document.addEventListener('DOMContentLoaded', function() {
+            const particlesContainer = document.getElementById('particles');
+            const particleCount = 30;
+            
+            for (let i = 0; i < particleCount; i++) {
+                const particle = document.createElement('div');
+                particle.style.position = 'absolute';
+                particle.style.width = Math.random() * 3 + 1 + 'px';
+                particle.style.height = particle.style.width;
+                particle.style.background = `rgba(${Math.floor(Math.random() * 156 + 100)}, ${Math.floor(Math.random() * 100)}, 255, ${Math.random() * 0.5 + 0.1})`;
+                particle.style.borderRadius = '50%';
+                particle.style.boxShadow = `0 0 ${Math.random() * 10 + 5}px rgba(179, 102, 255, 0.8)`;
+                
+                // Начальная позиция
+                particle.style.left = Math.random() * 100 + 'vw';
+                particle.style.top = Math.random() * 100 + 'vh';
+                
+                // Анимация движения
+                const duration = Math.random() * 20 + 10;
+                particle.style.animation = `float ${duration}s linear infinite`;
+                
+                particlesContainer.appendChild(particle);
+                
+                // Создаем keyframes для анимации
+                const keyframes = `
+                    @keyframes float {
+                        0% {
+                            transform: translate(0, 0);
+                        }
+                        50% {
+                            transform: translate(${Math.random() * 100 - 50}px, ${Math.random() * 100 - 50}px);
+                        }
+                        100% {
+                            transform: translate(0, 0);
+                        }
+                    }
+                `;
+                
+                const style = document.createElement('style');
+                style.innerHTML = keyframes;
+                document.head.appendChild(style);
+            }
+        });
+    </script>
+</body>
+</html>
