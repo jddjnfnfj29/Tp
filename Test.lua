@@ -1,13 +1,20 @@
-# Пример шифрования на Python (можно использовать онлайн-конвертеры)
-key = "mysecretkey123"
-text = """print("Привет, эксплойты!")
-game.Players.LocalPlayer:Kick("Скрипт работает!")"""
+local key = "projectKeyList"
+local text = "SecretTextForRoblox"
 
-# XOR-шифрование
-encrypted = "".join([chr(ord(c) ^ ord(key[i % len(key)])) for i, c in enumerate(text)])
+-- XOR-шифрование в Lua
+local encrypted = ""
+for i = 1, #text do
+    local key_char = key:sub((i-1) % #key + 1, (i-1) % #key + 1)
+    encrypted = encrypted .. string.char(bit32.bxor(text:byte(i), key_char:byte(1)))
+end
 
-# Кодируем в Base64
-import base64
-final_encrypted = base64.b64encode(encrypted.encode()).decode()
+print("Зашифрованный текст:", encrypted)
 
-print(final_encrypted)  # Выведет что-то вроде: "X1ZcU1FWRlNTWFZQU1lWUFNWVlBTWQ=="
+-- Расшифровка
+local decrypted = ""
+for i = 1, #encrypted do
+    local key_char = key:sub((i-1) % #key + 1, (i-1) % #key + 1)
+    decrypted = decrypted .. string.char(bit32.bxor(encrypted:byte(i), key_char:byte(1)))
+end
+
+print("Расшифрованный текст:", decrypted)
