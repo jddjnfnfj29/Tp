@@ -1,6 +1,6 @@
 if getgenv then 
     getgenv().LoadTime = "5" -- Delay before loading the script
-    getgenv().GeneratorTime = "3.5" -- Going below 2.5 may kick you from the game
+    getgenv().GeneratorTime = "3.5" -- можете копировать скрипт и ставить свои значения чтобы не кикало ставте минимально 2.5
 end
 
 --!nocheck
