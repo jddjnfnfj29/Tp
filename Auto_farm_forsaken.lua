@@ -1,5 +1,5 @@
 if getgenv then 
-    getgenv().LoadTime = "5" -- Delay before loading the script
+    getgenv().LoadTime = "5" -- задержка загрузки скрипта
     getgenv().GeneratorTime = "3.5" -- можете копировать скрипт и ставить свои значения чтобы не кикало ставте минимально 2.5
 end
 
